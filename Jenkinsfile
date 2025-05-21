@@ -1,95 +1,83 @@
 pipeline {
     agent any
-    
+
     environment {
-        DOCKER_IMAGE = 'static-django-app'
-        DOCKER_TAG = "${env.BUILD_NUMBER}"
-        CONTAINER_NAME = 'static-django-container'
+        PYTHON_VERSION = '3.11'
+        PROJECT_NAME = 'django-static-site'
     }
-    
+
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                // Checkout code from GitHub repository
+                git url: 'https://github.com/abhicse002/jenkins-proj.git', branch: 'main'
+
+                // Show latest commit info
+                sh 'git log -1 --pretty=format:"%h - %an, %ar : %s"'
             }
         }
-        
-        stage('Build Docker Image') {
+
+        stage('Setup Python Environment') {
             steps {
-                sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
-                sh 'docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest'
+                // Create and activate a Python virtual environment
+                sh '''
+                    python${PYTHON_VERSION} -m venv venv
+                    . venv/bin/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                '''
             }
         }
-        
+
+        stage('Collect Static Files') {
+            steps {
+                // Collect static files
+                sh '''
+                    . venv/bin/activate
+                    python manage.py collectstatic --noinput
+                '''
+            }
+        }
+
         stage('Run Tests') {
             steps {
-                // Run the Django tests using the test service defined in docker-compose.yml
-                sh 'docker-compose run --rm test'
-            }
-            post {
-                always {
-                    // Generate and publish test reports
-                    junit 'reports/*.xml'
-                }
-            }
-        }
-        
-        stage('Deploy to Staging') {
-            when {
-                branch 'develop'
-            }
-            steps {
-                // Stop any existing container
-                sh 'docker stop ${CONTAINER_NAME}-staging || true'
-                sh 'docker rm ${CONTAINER_NAME}-staging || true'
-                
-                // Start the new container
-                sh 'docker run -d --name ${CONTAINER_NAME}-staging -p 8001:8000 \
-                    -e DEBUG=False \
-                    -e SECRET_KEY=staging_secret_key \
-                    -e ALLOWED_HOSTS=staging.example.com,localhost,127.0.0.1 \
-                    ${DOCKER_IMAGE}:${DOCKER_TAG}'
+                // Run Django tests using the custom test runner script
+                sh '''
+                    . venv/bin/activate
+                    # Make the test runner executable
+                    chmod +x run_tests.py
+                    # Run tests using the custom runner that properly sets up the environment
+                    ./run_tests.py
+                '''
             }
         }
-        
-        stage('Deploy to Production') {
-            when {
-                branch 'main'
-            }
+
+        stage('Deploy to Development') {
             steps {
-                // Wait for manual approval
-                input message: 'Deploy to production?', ok: 'Deploy'
-                
-                // Stop any existing container
-                sh 'docker stop ${CONTAINER_NAME}-prod || true'
-                sh 'docker rm ${CONTAINER_NAME}-prod || true'
-                
-                // Start the new container
-                sh 'docker run -d --name ${CONTAINER_NAME}-prod -p 8000:8000 \
-                    -e DEBUG=False \
-                    -e SECRET_KEY=${PROD_SECRET_KEY} \
-                    -e ALLOWED_HOSTS=example.com,www.example.com \
-                    ${DOCKER_IMAGE}:${DOCKER_TAG}'
+                echo 'Deploying to development environment...'
+                sh '''
+                    . venv/bin/activate
+                    python manage.py check --deploy
+                '''
             }
         }
     }
-    
+
     post {
         always {
-            // Clean up older Docker images to save space
-            sh 'docker image prune -f'
+            // Clean up workspace
+            cleanWs()
         }
-        
+
         success {
             echo 'Pipeline completed successfully!'
         }
-        
+
         failure {
             echo 'Pipeline failed!'
-            // Send notification on failure
-            mail to: 'admin@example.com',
-                subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
-                body: "Something went wrong with ${env.BUILD_URL}"
+            // mail to: 'abhicse002@gmail.com',
+            //     subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
+            //     body: "Something went wrong with ${env.BUILD_URL}"
         }
     }
 }
