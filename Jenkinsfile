@@ -70,7 +70,7 @@ pipeline {
         }
 
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Huarry...!! Pipeline completed successfully!'
         }
 
         failure {
