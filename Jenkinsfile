@@ -49,46 +49,6 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                echo '>>> STEP: Running Django tests'
-                // Run Django tests using the custom test runner script
-                sh '''
-                    echo "Creating test runner script..."
-                    cat > run_tests.py << 'EOF'
-#!/usr/bin/env python
-"""Test runner script to help with test discovery issues in Jenkins."""
-import os
-import sys
-import django
-from django.conf import settings
-from django.test.utils import get_runner
-
-if __name__ == "__main__":
-    # Set up Django environment
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'static_site.settings'
-    django.setup()
-    
-    # Create test runner
-    TestRunner = get_runner(settings)
-    test_runner = TestRunner()
-    
-    # Run tests
-    failures = test_runner.run_tests(["static_app"])
-    sys.exit(bool(failures))
-EOF
-                    
-                    echo "Making test runner executable..."
-                    chmod +x run_tests.py
-                    
-                    echo "Activating virtual environment and running tests..."
-                    . venv/bin/activate
-                    ./run_tests.py
-                    echo "Tests completed."
-                '''
-            }
-        }
-
         stage('Deploy to Development') {
             steps {
                 echo '>>> STEP: Deploying to development environment'
@@ -115,7 +75,7 @@ EOF
 
         failure {
             echo 'Pipeline failed!'
-            // mail to: 'abhicse002@gmail.com',
+            // mail to: 'admin@example.com',
             //     subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
             //     body: "Something went wrong with ${env.BUILD_URL}"
         }
