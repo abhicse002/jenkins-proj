@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - static_volume:/app/staticfiles
+    environment:
+      - DEBUG=False
+      - SECRET_KEY=docker_secret_key_example_change_in_production
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+  
+  # Test service for running Django tests
+  test:
+    build: .
+    command: python manage.py test static_app
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=test_key
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+
+volumes:
+  static_volume:

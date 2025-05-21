@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - Static Django Site{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <h1 class="display-4 mb-4 text-center">About Us</h1>
+        <p class="lead">We are a team of developers passionate about creating beautiful, functional websites using Django and modern frontend technologies.</p>
+        
+        <div class="card mt-5 mb-5 border-0 bg-light">
+            <div class="card-body p-5">
+                <h2 class="mb-4">Our Mission</h2>
+                <p>Our mission is to demonstrate how easy it can be to create stunning static websites using Django as a backend. This project serves as a template for developers who want to quickly set up a static site with a modern frontend.</p>
+                <p>We believe in clean code, responsive design, and optimized performance.</p>
+            </div>
+        </div>
+        
+        <h2 class="mb-4 mt-5">Our Team</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-user fa-2x"></i>
+                        </div>
+                        <h4>John Doe</h4>
+                        <p class="text-muted">Lead Developer</p>
+                        <p>Specializes in Django and backend development.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-user fa-2x"></i>
+                        </div>
+                        <h4>Jane Smith</h4>
+                        <p class="text-muted">Frontend Designer</p>
+                        <p>Expert in responsive design and UI/UX.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-user fa-2x"></i>
+                        </div>
+                        <h4>Mike Johnson</h4>
+                        <p class="text-muted">Full Stack Developer</p>
+                        <p>Handles everything from databases to CSS.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

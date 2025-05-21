@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Static Django Site{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto text-center">
+        <h1 class="display-4 mb-4">Welcome to Static Django</h1>
+        <p class="lead mb-5">A modern static website built with Django and Bootstrap 5.</p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+            <a href="{% url 'about' %}" class="btn btn-primary btn-lg px-4 me-md-2">Learn More</a>
+            <a href="{% url 'contact' %}" class="btn btn-outline-secondary btn-lg px-4">Contact Us</a>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-laptop-code fa-3x text-primary mb-3"></i>
+                <h3 class="card-title">Modern Design</h3>
+                <p class="card-text">Responsive layout that works on all devices using Bootstrap 5.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-bolt fa-3x text-primary mb-3"></i>
+                <h3 class="card-title">Fast Loading</h3>
+                <p class="card-text">Optimized for performance with minimal JavaScript.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-cogs fa-3x text-primary mb-3"></i>
+                <h3 class="card-title">Django Powered</h3>
+                <p class="card-text">Built on the robust Django framework for reliability.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
